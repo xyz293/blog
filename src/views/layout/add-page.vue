@@ -5,11 +5,9 @@
         <h1 class="logo">星空博客 - 添加文章</h1>
       </div>
     </header>
-
     <main class="container main-content">
       <h2 class="section-title">添加新文章</h2>
           <!--<el-button type="warning" @click="logout" :style="{float:'right',marginTop:'10px'}">退出登录</el-button>--> 
-
       <el-form
         :model="form"
         :rules="rules"
@@ -17,6 +15,7 @@
         label-width="120px"
         status-icon
         class="add-form"
+        style="margin-bottom: 100px"
       >
         <el-form-item label="文章标题" prop="form.articleTitle" :rules="[
           { required: true, message: '请输入文章标题', trigger: 'blur' }
@@ -79,7 +78,8 @@ const form = reactive({
   articleTitle: '',
   articleDesc: '',
   articleContent: '',
-  categoryName: ''
+  categoryName: '',
+  articleCover:''
 })
 const rules = {
   articleTitle: [
@@ -98,6 +98,9 @@ const rules = {
   categoryName: [
     { required: true, message: '请输入分类名称', trigger: 'change' },
     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'change' }
+  ],
+  articleCover: [
+    { required: true, message: '请输入文章封面', trigger: 'change' },
   ]
 }
 const empty = () => { 
@@ -105,6 +108,7 @@ const empty = () => {
     form.articleDesc = ''
     form.articleContent = ''
     form.categoryName = ''
+
 }
 
 

@@ -11,40 +11,47 @@
             <a href="#" class="nav-link">分类</a>
             <a href="#" class="nav-link">关于</a>
             <a href="#" class="nav-link">联系</a>
+            <a href="#" class="nav-link">我的</a>
           </nav>
           <el-input
-            v-model="searchQuery"
+            v-model="text"
             placeholder="搜索文章..."
             clearable
             prefix-icon="el-icon-search"
             class="search-input"
+            @keyup.enter="handleSearch(text)"
           />
           <el-button type="primary" @click="pulish">发布文章</el-button>
         </div>
       </div>
     </header>
 
-    <main class="container main-content">
+    <main class="container main-content" :style="{marginLeft: '180px'}">
+      <div class="carousel-banner">
+    <img :src="photo_address" alt="轮播图" class="carousel-image" />
+  </div>
       <h2 class="section-title">最新文章</h2>
       <div class="posts-grid">
         <article
-          v-for="post in filteredPosts"
+          v-for="post in post_list"
           :key="post.id"
           class="post-card"
         >
-          <h3 class="post-title">{{ post.title }}</h3>
-          <p class="post-excerpt">{{ post.excerpt }}</p>
+         <img :src="post.articleCover" alt="文章封面" class="post-image" />
+
+          <h3 class="post-title">{{ post.articleTitle }}</h3>
+          <p class="post-excerpt">{{ post.articleDesc }}</p>
           <div class="post-meta">
-            <time>{{ post.date }}</time>
+            <time>{{ post.createTime }}</time>
             <div class="tags">
-              <span
-                v-for="tag in post.tags"
-                :key="tag"
-                class="tag"
-              >{{ tag }}</span>
+            <el-form>
+                <el-form-item>
+                    <el-tag>{{post.tag}}</el-tag>
+                </el-form-item>
+            </el-form>
             </div>
           </div>
-          <button class="read-more">阅读更多</button>
+          <button class="read-more" @click="show_detail(80)">阅读更多</button>
         </article>
       </div>
     </main>
@@ -53,6 +60,7 @@
       <div class="container">&copy; 2025 星空博客 | 版权所有</div>
     </footer>
   </div>
+
 </template>
 
 <script setup>
@@ -61,11 +69,49 @@ import { ElInput, ElButton } from 'element-plus'
 import 'element-plus/es/components/input/style/css'
 import 'element-plus/es/components/button/style/css'
 import {useRouter} from 'vue-router'
+import {get_artcrile_list} from '../../api/artcrile'
+import {get_photo_list} from '../../api/photo'
 const router = useRouter()
+const post_list=ref([])
+const photo_list=ref([])
+const photo_address = ref('')
+const show_photo=async()=>{ 
+const randomTag = Math.floor(Math.random() * photo_list.value.length)
+  setInterval(() => {
+    photo_address.value=photo_list.value[randomTag].imgUrl
+    console.log(1)
+  }, 5000)
+}
+
+const get_photo = async ()=>{
+  const res = await get_photo_list()
+  photo_list.value =res.data.data
+  console.log(photo_list.value[1])
+}
+const show_detail = (id)=>{
+ console.log('跳转id:', id)
+  router.push(`/detail/${id}`)
+}
+const show_article = async ()=>{
+  const res = await get_artcrile_list()
+  post_list.value =res.data.data
+}
+onMounted(async () => {
+  await get_photo()     
+  show_photo()          
+  show_article()
+})
+
+const text = ref('')
+const handleSearch = (text)=>{
+  router.push(`/search/${text}`) 
+}
+
 const pulish =()=>{
     router.push('/add')
 }
-const post = ref([])
+
+
 //在dom加载完成后执行，后续明天写
 
 // 粒子背景相关代码
@@ -152,7 +198,22 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap');
+.carousel-banner {
+  width: 100%;
+  margin-bottom: 40px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 18px #3344ff88;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 400px; /* 固定高度 */
+  object-fit: cover; /* 避免图片变形 */
+  display: block; /* 消除 img 默认下边空隙 */
+}
 
 .blog-homepage {
   position: relative;

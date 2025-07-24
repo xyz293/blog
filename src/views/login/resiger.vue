@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref, reactive } from 'vue'
 import { getUserInfo, register } from '../../api/user'
 import { useRouter } from 'vue-router'
 
+
 defineOptions({
   name: 'RegisterForm'
 })

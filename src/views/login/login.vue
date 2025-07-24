@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref, reactive } from 'vue'
 import { login } from '../../api/user'
 import { useRouter } from 'vue-router'
+
 defineOptions({
   name: 'LoginForm'
 })
@@ -29,6 +30,8 @@ const login_data = async () => {
   try {
     await main.value.validate()
     const res = await login(user.username, user.password)
+    console.log(res)
+    localStorage.setItem('token',res.data.data)
     if (res.data.code === 200) {
       router.push('/')
     } else {
@@ -142,7 +145,7 @@ onUnmounted(() => {
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" class="full-width-btn" @click="login_data">登录</el-button>
+          <el-button type="primary" class="full-width-btn" @click="login_data" :style="{marginRight:'20px'}">登录</el-button>
         </el-form-item>
       </el-form>
     </div>

@@ -6,6 +6,10 @@ const request = axios.create({
 })
 // 添加请求拦截器
 request.interceptors.request.use(function (config) {
+  const token = localStorage.getItem('token')
+  if(token){
+     config.headers.Authorization = token
+  }
     // 在发送请求之前做些什么
     return config;
   }, function (error) {
