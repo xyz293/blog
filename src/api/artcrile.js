@@ -38,3 +38,9 @@ export function search(text){
 export function likeArticle(articleId) {
   return request.post(`/article/${articleId}/like`);
 }
+export function get_tags(){
+  return request({
+    url:'/tag/list',
+    method:'get'
+  })
+}

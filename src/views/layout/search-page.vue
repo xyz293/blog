@@ -9,8 +9,10 @@ const get_text=async()=>{
     console.log(res)
     list.value = res.data.data
 }
+
 onMounted(()=>{
     get_text()
+   
 })
 import {useRouter} from 'vue-router'
 const router = useRouter()
@@ -20,38 +22,85 @@ const handleClick = async (id) => {
 }
 </script>
 <template>
-    <div>
-        
-       <p v-for="item in list" :key="item.id" :style="{marginLeft:'400px'}" v-html=" item.articleTitle"
+
+    <div class="articles">
+      <p
+        v-for="item in list"
+        :key="item.id"
+        v-html="item.articleTitle"
         class="article-item"
-        @click = "handleClick(item.id)"
-       ></p>
+        @click="handleClick(item.id)"
+      ></p>
     </div>
+
 </template>
-<style>
-.article-item {
-  margin: 12px 0;
-  margin-left: 400px;
-  padding: 12px 20px;
-  max-width: 800px;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(40, 40, 40, 0.5));
-  color: #f0f0f0;
-  font-size: 20px;
-  font-family: 'Segoe UI', sans-serif;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+
+<style scoped>
+.article-container {
+  max-width: 900px;
+  margin: 20px auto 40px;
+  padding: 0 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #e0e6ff;
+  user-select: none;
+}
+
+/* 标签列表 */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tag {
+  background: linear-gradient(135deg, #7a8cff, #aebaff);
+  color: #1a264d;
+  padding: 6px 18px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 0 10px #8499ffaa;
   cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tag:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #7687ffdd;
 }
 
-.article-item * {
-  color: inherit;
+/* 文章列表容器 */
+.articles {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-/* 🌈 常见标签美化 */
+/* 文章条目 */
+.article-item {
+  background: linear-gradient(135deg, rgba(30, 30, 50, 0.7), rgba(50, 50, 80, 0.8));
+  padding: 20px 28px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(40, 48, 110, 0.5);
+  font-size: 20px;
+  line-height: 1.5;
+  color: #c5cee0;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: text;
+  word-break: break-word;
+}
+
+.article-item:hover {
+  background: linear-gradient(135deg, rgba(90, 100, 160, 0.8), rgba(110, 120, 190, 0.9));
+  box-shadow: 0 8px 30px rgba(90, 100, 180, 0.8);
+  transform: translateX(12px) scale(1.03);
+}
+
+/* 内嵌标签样式 */
 .article-item span {
-  color: #f47466;
-  font-weight: bold;
+  color: #f47166;
+  font-weight: 700;
 }
 
 .article-item em {
@@ -61,17 +110,33 @@ const handleClick = async (id) => {
 
 .article-item b {
   color: #ffe066;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .article-item strong {
   color: #ff9966;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-.article-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(10px) scale(1.02);
-}
+/* 响应式适配 */
+@media (max-width: 720px) {
+  .article-container {
+    padding: 0 12px;
+  }
 
+  .tag-list {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+
+  .article-item {
+    font-size: 18px;
+    padding: 16px 20px;
+  }
+}
 </style>

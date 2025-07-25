@@ -31,6 +31,26 @@ const router = createRouter({
     {
       path:'/search/:detail',
       component: () => import('../views/layout/search-page.vue')
+    },
+    {
+      path:'/my',
+      component: () => import('../views/person/my-deatail.vue')
+    },
+    {
+      path:'/talk',
+      component: () =>import('../views/layout/talk.vue')
+    },
+    {
+      path:'/talk/:id',
+      component: () =>import('../views/layout/talk-detail.vue'),
+      children:[{
+        path:'comment',
+        component: () =>import('../views/layout/talk-comment.vue')
+      }]
+    },
+    {
+      path:'/add_talk',
+      component: () =>import('../views/layout/add-talk.vue')
     }
   ]
 })

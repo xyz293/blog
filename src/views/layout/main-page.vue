@@ -7,11 +7,10 @@
         <h1 class="logo">星空博客</h1>
         <div class="header-top">
           <nav class="nav">
-            <a href="#" class="nav-link active">首页</a>
-            <a href="#" class="nav-link">分类</a>
-            <a href="#" class="nav-link">关于</a>
-            <a href="#" class="nav-link">联系</a>
-            <a href="#" class="nav-link">我的</a>
+            <el-button type="primary" class="nav-link active">首页</el-button>
+            <el-button type="primary" class="nav-link">分类</el-button>
+            <el-button type="primary" class="nav-link" @click="get_talk">说说</el-button>
+            <el-button type="primary" class="nav-link" @click="enter_me">我的</el-button>
           </nav>
           <el-input
             v-model="text"
@@ -28,7 +27,7 @@
 
     <main class="container main-content" :style="{marginLeft: '180px'}">
       <div class="carousel-banner">
-    <img :src="photo_address" alt="轮播图" class="carousel-image" />
+    <img v-lazy="photo_address" alt="轮播图" class="carousel-image" />
   </div>
       <h2 class="section-title">最新文章</h2>
       <div class="posts-grid">
@@ -37,7 +36,7 @@
           :key="post.id"
           class="post-card"
         >
-         <img :src="post.articleCover" alt="文章封面" class="post-image" />
+         <img v-lazy="post.articleCover" alt="文章封面" class="post-image" />
 
           <h3 class="post-title">{{ post.articleTitle }}</h3>
           <p class="post-excerpt">{{ post.articleDesc }}</p>
@@ -76,17 +75,23 @@ const post_list=ref([])
 const photo_list=ref([])
 const photo_address = ref('')
 const show_photo=async()=>{ 
-const randomTag = Math.floor(Math.random() * photo_list.value.length)
   setInterval(() => {
+    const randomTag = Math.floor(Math.random() * photo_list.value.length)
     photo_address.value=photo_list.value[randomTag].imgUrl
     console.log(1)
   }, 5000)
 }
-
+const get_talk =()=>{
+  router.push('/talk')
+}
 const get_photo = async ()=>{
   const res = await get_photo_list()
   photo_list.value =res.data.data
   console.log(photo_list.value[1])
+}
+const enter_me =()=>{
+  router.push('/my')
+
 }
 const show_detail = (id)=>{
  console.log('跳转id:', id)
@@ -94,12 +99,15 @@ const show_detail = (id)=>{
 }
 const show_article = async ()=>{
   const res = await get_artcrile_list()
-  post_list.value =res.data.data
+  post_list.value =res.data.data.recordList
+
+  console.log(post_list.value)
 }
 onMounted(async () => {
+   show_article()
   await get_photo()     
   show_photo()          
-  show_article()
+ 
 })
 
 const text = ref('')
