@@ -51,7 +51,20 @@ const router = createRouter({
     {
       path:'/add_talk',
       component: () =>import('../views/layout/add-talk.vue')
+    },
+    {
+      path:'/myphoto',
+      component: () =>import('../views/person/my-photo.vue')
+    },
+    {
+      path:'/friend',
+      component : () =>import ('../views/layout/friend.vue')
+    },
+    {
+      path:'/talkfriend',
+       component : () =>import ('../views/layout/talk-friend.vue')
     }
+    
   ]
 })
 

@@ -74,7 +74,6 @@ onMounted(() => {
   font-weight: 800;
   margin-bottom: 36px;
   background: linear-gradient(90deg, #ffb347, #ffcc33);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   user-select: text;
   text-shadow: 0 2px 6px rgba(255, 165, 0, 0.4);

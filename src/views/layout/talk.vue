@@ -3,19 +3,25 @@
     <div class="stars-bg"></div>
 
     <div class="talk-container">
-      <div class="talk-card" v-for="item in talks" :key="item.id" @click="handleClick(item.id)">
+      <div class="talk-card" v-for="item in talks" :key="item.id">
         <div class="avatar">
           <img
             :src="item.avatar"
             alt="头像"
           />
         </div>
+
         <div class="content">
-          <div class="header">
+          <div class="header" @click="handleClick(item.id)">
             <span class="nickname">{{item.nickname}}</span>
             <time class="time">{{item.createTime}}</time>
           </div>
+
           <p class="talk-text">{{item.talkContent}}</p>
+
+          <!-- ✅ 右下角按钮 -->
+          <el-button class="like-btn"  type="danger" size="mini" :icon="Delete" @click="del(item.id)"></el-button>
+
           <div class="footer">
             <span class="likes">👍 {{item.likeCount}}</span>
             <span class="comments">💬 {{item.commentCount}}</span>
@@ -23,6 +29,8 @@
         </div>
       </div>
     </div>
+
+    <!-- ✅ 右下角添加按钮 -->
     <div class="button-wrapper">
       <el-button type="primary" class="add-button" @click="handleAddTalk">添加说说</el-button>
     </div>
@@ -31,32 +39,41 @@
 
 <script setup>
 defineOptions({
-        name: "TaLk"
+  name: "TaLk"
 })
-import { ref } from "vue";
-const talks =ref([])
-import {get_talk} from '../../api/talk'
-import {onMounted} from 'vue'
-import {useRouter} from 'vue-router'
+import { Delete } from '@element-plus/icons-vue'
+import { ref, onMounted } from "vue";
+import { get_talk } from '../../api/talk'
+import { useRouter } from 'vue-router'
+import {del_talk} from '../../api/talk'
 const router  = useRouter()
-const handleAddTalk=()=>{
-    router.push('/add_talk')
+const talks = ref([])
+const del =async(id)=>{
+  const res= await del_talk(id)
+  console.log(res)
+  console.log(id)
+  get_talk_list()
 }
+
+const handleAddTalk=()=>{
+  router.push('/add_talk')
+}
+
 const handleClick =(id)=>{
   router.push(`/talk/${id}`)
-
-
 }
+
 const get_talk_list=async()=>{
-      const res = await get_talk()
-      talks.value=res.data.data.recordList
-      console.log(res.data.data.recordList)
-
+  const res = await get_talk()
+  talks.value = res.data.data.recordList
+  console.log(res.data.data.recordList)
 }
+
 onMounted(()=>{
-    get_talk_list()
+  get_talk_list()
 })
 </script>
+
 <style scoped>
 .talk-page {
   position: relative;
@@ -77,29 +94,17 @@ onMounted(()=>{
   opacity: 0.3;
   z-index: 0;
 }
-.like-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999;
-}
-.button-wrapper {
-   position: absolute;
-  bottom: 100px;
-  right: 20px;
-  padding: 20px;
-  z-index: 999;
-  display: flex;
-  justify-content: flex-end;
-}
 
+/* ✅ 每个说说卡片 */
 .talk-container {
   position: relative;
   z-index: 1;
   max-width: 800px;
   margin: 0 auto;
 }
+
 .talk-card {
+  position: relative;   /* ✅ 让 like-btn 可以用 absolute 定位 */
   display: flex;
   background: rgba(30, 36, 60, 0.9);
   border-radius: 16px;
@@ -116,6 +121,7 @@ onMounted(()=>{
   box-shadow: 0 12px 24px rgba(100, 120, 255, 0.3);
 }
 
+/* ✅ 头像 */
 .avatar img {
   width: 64px;
   height: 64px;
@@ -129,6 +135,26 @@ onMounted(()=>{
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  padding-bottom: 35px; /* ✅ 预留按钮的空间 */
+}
+
+/* ✅ 点赞按钮固定右下角 */
+.like-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+  padding: 2px 8px;
+  font-size: 12px;
+  z-index: 2;
+}
+
+/* ✅ 页面的右下角按钮 */
+.button-wrapper {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
 }
 
 .header {

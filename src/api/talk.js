@@ -41,3 +41,9 @@ export function up_avatar() {
     method: 'post',
   })
 }
+export function del_talk(id){
+    return request({
+        url:`/admin/talk/${id}`,
+        method:'delete'
+    })
+}

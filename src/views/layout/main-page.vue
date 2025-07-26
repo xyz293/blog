@@ -74,12 +74,19 @@ const router = useRouter()
 const post_list=ref([])
 const photo_list=ref([])
 const photo_address = ref('')
+let timer = null
+onUnmounted(() => {
+  clearInterval(timer)
+  console.log('页面已卸载，定时器已清除')
+})
 const show_photo=async()=>{ 
-  setInterval(() => {
+     const randomTag = Math.floor(Math.random() * photo_list.value.length)
+    photo_address.value = photo_list.value[randomTag].imgUrl
+ setInterval(() => {
     const randomTag = Math.floor(Math.random() * photo_list.value.length)
-    photo_address.value=photo_list.value[randomTag].imgUrl
-    console.log(1)
-  }, 5000)
+    photo_address.value = photo_list.value[randomTag].imgUrl
+    console.log('切换图片')
+  }, 4000)
 }
 const get_talk =()=>{
   router.push('/talk')

@@ -3,25 +3,47 @@ import { ref } from 'vue'
 import {add_talk,up_avatar}  from '../../api/talk'
 import {useRouter} from 'vue-router'
 const router =useRouter()
-const talkContent = ref('')
-const isTop = ref(0)
-const status = ref('')
-const file = ref(null)
+const talk_list =ref({
+  talkContent:'',
+  isTop:0,
+  status:'',
+  file:null
+})
 
 const data_file =async(e)=>{
-file.value = e.target.files[0]
-   const res =await up_avatar(file.value)
+talk_list.value.file = e.target.files[0]
+   const res =await up_avatar(talk_list.value.file)
    console.log(res) 
 }
 const up_data =async()=>{
-    const res =await add_talk(talkContent.value,isTop.value,status.value)
+    const res =await add_talk(talk_list.value.talkContent,talk_list.value.isTop,talk_list.value.status)
     console.log(res)
 
 }
+const check =ref(null)
+const rules ={
+  talkContent: [
+    { required: true, message: '请输入说说内容', trigger: 'blur' },
+    { min: 3, max: 500, message: '长度在 3 到 500 个字符', trigger: 'blur' }
+  ],
+  isTop: [
+    { required: true, message: '请选择是否置顶', trigger: 'change' }
+  ],
+  file: [
+    { required: true, message: '请上传图片', trigger: 'change' }
+  ]
+}
 function submitForm() {
-    up_data()
-    up_avatar()
-   router.push('/talk')
+   check.value.validate((valid) => {
+    if (valid) {
+      up_data()
+      data_file()
+      router.push('/talk')
+    } else {
+      console.log('error submit!!');
+      return false;
+    }
+   })
 }
 </script>
 
@@ -29,8 +51,8 @@ function submitForm() {
   <div class="form-wrapper">
     <h2 class="title">发布说说</h2>
     <div class="stars-bg"></div>
-    <el-form label-position="top" class="talk-form">
-      <el-form-item label="说说内容" required>
+    <el-form label-position="top" class="talk-form" :model="talk_list" :rules="rules" ref= 'check'>
+      <el-form-item label="说说内容" required prop="talkContent">
         <el-input
           v-model="talkContent"
           type="textarea"
@@ -49,7 +71,7 @@ function submitForm() {
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item >
+      <el-form-item prop="file">
         <input type="file" @change="data_file" class="file-input" />
         <div v-if="statusFile" class="file-name">已选择文件: {{ statusFile.name }}</div>
       </el-form-item>
