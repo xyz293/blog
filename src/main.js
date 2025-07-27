@@ -10,17 +10,20 @@ import { createPinia } from 'pinia'
 import VueLazyLoad from 'vue3-lazyload'
 
 const app = createApp(App)
-const pinia = createPinia()
-pinia.use(persist)
-app.use(VueLazyLoad, {
-  loading: 'loading.gif', // 正在加载时的占位图
-  error: 'error.png',     // 加载失败的替代图
-  attempt: 3              // 尝试加载次数
-})
 
+const pinia = createPinia()
+
+pinia.use(persist)
 
 app.use(pinia)
 app.use(router)
 app.use(ElementPlus)
-app.use(Particles) // 注册粒子背景
+app.use(Particles)
+app.use(VueLazyLoad, {
+  loading: 'loading.gif', // 加载中占位图
+  error: 'error.png',     // 加载失败占位图
+  attempt: 3
+})
+
+
 app.mount('#app')

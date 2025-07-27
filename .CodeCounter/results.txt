@@ -1,0 +1,85 @@
+Date : 2025-07-26 16:06:02
+Directory : ./
+Total : 43 files,  14894 codes, 52 comments, 1407 blanks, all 16353 lines, 0.35% comment rate
+
+Languages
++------------+------------+------------+------------+------------+------------+--------------+
+| language   | files      | code       | comment    | blank      | total      | comment rate |
++------------+------------+------------+------------+------------+------------+--------------+
+| JSON       |          6 |      8,318 |          5 |          5 |      8,328 |        0.06% |
+| YAML       |          1 |      3,423 |          0 |        984 |      4,407 |        0.00% |
+| vue        |         16 |      2,668 |          9 |        348 |      3,025 |        0.34% |
+| JavaScript |         15 |        344 |         36 |         32 |        412 |        9.47% |
+| CSS        |          2 |        101 |          2 |         20 |        123 |        1.94% |
+| Markdown   |          1 |         26 |          0 |         16 |         42 |        0.00% |
+| HTML       |          1 |         13 |          0 |          1 |         14 |        0.00% |
+| XML        |          1 |          1 |          0 |          1 |          2 |        0.00% |
++------------+------------+------------+------------+------------+------------+--------------+
+
+Directories
++-----------------------------------+------------+------------+------------+------------+------------+--------------+
+| path                              | files      | code       | comment    | blank      | total      | comment rate |
++-----------------------------------+------------+------------+------------+------------+------------+--------------+
+| .                                 |         43 |     14,894 |         52 |      1,407 |     16,353 |        0.35% |
+| src                               |         31 |      3,078 |         21 |        396 |      3,495 |        0.68% |
+| src\views                         |         15 |      2,650 |          9 |        348 |      3,007 |        0.34% |
+| src\views\layout                  |         10 |      1,719 |          5 |        227 |      1,951 |        0.29% |
+| blog-backend                      |          2 |      1,463 |          0 |          2 |      1,465 |        0.00% |
+| src\views\login                   |          2 |        506 |          1 |         79 |        586 |        0.20% |
+| src\views\person                  |          3 |        425 |          3 |         42 |        470 |        0.70% |
+| src\api                           |          7 |        160 |          0 |          8 |        168 |        0.00% |
+| src\assets                        |          3 |        102 |          2 |         21 |        125 |        1.92% |
+| src\router                        |          1 |         67 |          0 |          5 |         72 |        0.00% |
+| src\stores                        |          2 |         38 |          1 |          9 |         48 |        2.56% |
+| src\ulits                         |          1 |         21 |          8 |          1 |         30 |       27.59% |
++-----------------------------------+------------+------------+------------+------------+------------+--------------+
+
+Files
++-----------------------------------+------------+------------+------------+------------+------------+--------------+
+| filename                          | language   | code       | comment    | blank      | total      | comment rate |
++-----------------------------------+------------+------------+------------+------------+------------+--------------+
+| .prettierrc.json                  | JSON       |          6 |          0 |          1 |          7 |        0.00% |
+| README.md                         | Markdown   |         26 |          0 |         16 |         42 |        0.00% |
+| blog-backend\package-lock.json    | JSON       |      1,438 |          0 |          1 |      1,439 |        0.00% |
+| blog-backend\package.json         | JSON       |         25 |          0 |          1 |         26 |        0.00% |
+| eslint.config.js                  | JavaScript |         12 |         20 |          1 |         33 |       62.50% |
+| index.html                        | HTML       |         13 |          0 |          1 |         14 |        0.00% |
+| jsconfig.json                     | JSON       |          4 |          5 |          0 |          9 |       55.56% |
+| package-lock.json                 | JSON       |      6,801 |          0 |          1 |      6,802 |        0.00% |
+| package.json                      | JSON       |         44 |          0 |          1 |         45 |        0.00% |
+| pnpm-lock.yaml                    | YAML       |      3,423 |          0 |        984 |      4,407 |        0.00% |
+| src\App.vue                       | vue        |         18 |          0 |          0 |         18 |        0.00% |
+| src\api\artcrile.js               | JavaScript |         44 |          0 |          2 |         46 |        0.00% |
+| src\api\friend.js                 | JavaScript |          7 |          0 |          2 |          9 |        0.00% |
+| src\api\message.js                | JavaScript |          7 |          0 |          1 |          8 |        0.00% |
+| src\api\my-detail.js              | JavaScript |         19 |          0 |          0 |         19 |        0.00% |
+| src\api\photo.js                  | JavaScript |          7 |          0 |          0 |          7 |        0.00% |
+| src\api\talk.js                   | JavaScript |         48 |          0 |          2 |         50 |        0.00% |
+| src\api\user.js                   | JavaScript |         28 |          0 |          1 |         29 |        0.00% |
+| src\assets\base.css               | CSS        |         71 |          2 |         14 |         87 |        2.74% |
+| src\assets\logo.svg               | XML        |          1 |          0 |          1 |          2 |        0.00% |
+| src\assets\main.css               | CSS        |         30 |          0 |          6 |         36 |        0.00% |
+| src\main.js                       | JavaScript |         22 |          1 |          4 |         27 |        4.35% |
+| src\router\index.js               | JavaScript |         67 |          0 |          5 |         72 |        0.00% |
+| src\stores\counter.js             | JavaScript |         18 |          0 |          4 |         22 |        0.00% |
+| src\stores\like.js                | JavaScript |         20 |          1 |          5 |         26 |        4.76% |
+| src\ulits\request.js              | JavaScript |         21 |          8 |          1 |         30 |       27.59% |
+| src\views\layout\add-page.vue     | vue        |        181 |          1 |         25 |        207 |        0.55% |
+| src\views\layout\add-talk.vue     | vue        |        157 |          0 |         16 |        173 |        0.00% |
+| src\views\layout\detail-page.vue  | vue        |        107 |          0 |         16 |        123 |        0.00% |
+| src\views\layout\friend.vue       | vue        |        246 |          0 |         29 |        275 |        0.00% |
+| src\views\layout\main-page.vue    | vue        |        428 |          0 |         51 |        479 |        0.00% |
+| src\views\layout\search-page.vue  | vue        |        124 |          0 |         19 |        143 |        0.00% |
+| src\views\layout\talk-comment.vue | vue        |          5 |          0 |          1 |          6 |        0.00% |
+| src\views\layout\talk-detail.vue  | vue        |        162 |          0 |         26 |        188 |        0.00% |
+| src\views\layout\talk-friend.vue  | vue        |        145 |          2 |         18 |        165 |        1.36% |
+| src\views\layout\talk.vue         | vue        |        164 |          2 |         26 |        192 |        1.20% |
+| src\views\login\login.vue         | vue        |        239 |          0 |         37 |        276 |        0.00% |
+| src\views\login\resiger.vue       | vue        |        267 |          1 |         42 |        310 |        0.37% |
+| src\views\person\my-deatail.vue   | vue        |        330 |          3 |         29 |        362 |        0.90% |
+| src\views\person\my-photo.vue     | vue        |         93 |          0 |         11 |        104 |        0.00% |
+| src\views\person\person-like.vue  | vue        |          2 |          0 |          2 |          4 |        0.00% |
+| vite.config.js                    | JavaScript |         15 |          1 |          3 |         19 |        6.25% |
+| vitest.config.js                  | JavaScript |          9 |          5 |          1 |         15 |       35.71% |
+| Total                             |            |     14,894 |         52 |      1,407 |     16,353 |        0.35% |
++-----------------------------------+------------+------------+------------+------------+------------+--------------+

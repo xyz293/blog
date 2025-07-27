@@ -27,7 +27,7 @@ const rules = {
 }
 
 const login_data = async () => {
-  try {
+  
     await main.value.validate()
     const res = await login(user.username, user.password)
     console.log(res)
@@ -38,10 +38,6 @@ const login_data = async () => {
       // 可自行处理失败提示，比如 Message 组件
       alert(res.data.msg || '登录失败')
     }
-  } catch (err) {
-    console.error('登录失败:', err)
-    // 校验失败
-  }
 }
 
 // 粒子动画相关
@@ -143,16 +139,24 @@ onUnmounted(() => {
         <el-form-item label="密码" prop="password">
           <el-input placeholder="请输入密码" show-password clearable v-model="user.password" />
         </el-form-item>
+<el-form-item>
+  <el-button type="primary" class="login-btn" @click="login_data" :style="{marginRight:'10px'}">登录</el-button>
+</el-form-item>
 
-        <el-form-item>
-          <el-button type="primary" class="full-width-btn" @click="login_data" :style="{marginRight:'20px'}">登录</el-button>
-        </el-form-item>
+<el-form-item>
+  <div class="links-row">
+    <a href="/register" class="btn-link">注册账号</a>
+    <a href="/forgot-password" class="btn-link">忘记密码？</a>
+  </div>
+</el-form-item>
+
       </el-form>
     </div>
   </div>
 </template>
 
 <style scoped>
+
 .particles-bg {
   position: fixed;
   top: 0;
@@ -162,6 +166,48 @@ onUnmounted(() => {
   z-index: 0;
   pointer-events: none;
   background: #f0f4ff; /* 带一点淡蓝色调，更接近星空夜晚的冷色 */
+}
+
+
+.login-btn {
+  width: 100%;
+  height: 42px;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #264ef0 0%, #4a73ff 100%);
+  box-shadow: 0 6px 20px rgba(38, 78, 240, 0.45);
+  transition: background 0.3s ease, transform 0.2s;
+  color: white;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.login-btn:hover {
+  background: linear-gradient(90deg, #4a73ff 0%, #264ef0 100%);
+  transform: scale(1.05);
+}
+
+.links-row {
+  display: flex;
+  justify-content: center; /* 居中对齐，改成 flex-end 右对齐也可以 */
+  gap: 24px; /* 两个链接间距 */
+  user-select: none;
+  margin-top: 8px;
+}
+
+.btn-link {
+  font-size: 14px;
+  color: #264ef0;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.btn-link:hover {
+  color: #4a73ff;
+  text-decoration: underline;
 }
 
 .login-container {

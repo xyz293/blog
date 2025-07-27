@@ -43,7 +43,7 @@ export function up_avatar() {
 }
 export function del_talk(id){
     return request({
-        url:`/admin/talk/${id}`,
+        url:`/admin/talk/delete/${id}`,
         method:'delete'
     })
 }

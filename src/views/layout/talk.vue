@@ -1,36 +1,62 @@
 <template>
   <div class="talk-page">
-    <div class="stars-bg"></div>
+    <!-- 🌌 背景图 -->
+    <div class="stars-bg">
+      <img :src="photo_address" alt="背景图" />
+    </div>
 
+    <!-- 📄 说说卡片 -->
     <div class="talk-container">
       <div class="talk-card" v-for="item in talks" :key="item.id">
+        
+        <!-- 👤 左边头像 -->
         <div class="avatar">
-          <img
-            :src="item.avatar"
-            alt="头像"
-          />
+          <img :src="item.avatar" alt="头像" />
         </div>
 
+        <!-- 📜 右边内容 -->
         <div class="content">
-          <div class="header" @click="handleClick(item.id)">
-            <span class="nickname">{{item.nickname}}</span>
-            <time class="time">{{item.createTime}}</time>
+          <!-- 🔥 ✅ 图片内容放在最上方 -->
+          <div class="talk-images" v-if="item.images && item.images.length" >
+            <img 
+              v-for="(img, idx) in item.images" 
+              :key="idx" 
+              :src="img" 
+              alt="说说图片" 
+              class="talk-img"
+            />
           </div>
 
-          <p class="talk-text">{{item.talkContent}}</p>
+          <!-- 标题区域 -->
+          <div class="header">
+            <div class="info" @click ="handleClick(item.id)">
+              <span class="nickname">{{ item.nickname }}</span>
+              <time class="time">{{ item.createTime }}</time>
+            </div>
 
-          <!-- ✅ 右下角按钮 -->
-          <el-button class="like-btn"  type="danger" size="mini" :icon="Delete" @click="del(item.id)"></el-button>
+            <!-- ✅ 删除按钮（移到这里） -->
+            <el-button 
+              class="delete-btn" 
+              type="danger" 
+              size="mini" 
+              :icon="Delete" 
+              @click.stop="del(item.id)">
+            </el-button>
+          </div>
 
-          <div class="footer">
-            <span class="likes">👍 {{item.likeCount}}</span>
-            <span class="comments">💬 {{item.commentCount}}</span>
+          <!-- 文字内容 -->
+          <p class="talk-text" @click ="handleClick(item.id)" >{{ item.talkContent }}</p>
+
+          <!-- 底部信息 -->
+          <div class="footer" @click ="handleClick(item.id)">
+            <span class="likes">👍 {{ item.likeCount }}</span>
+            <span class="comments">💬 {{ item.commentCount }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ✅ 右下角添加按钮 -->
+    <!-- 悬浮按钮 -->
     <div class="button-wrapper">
       <el-button type="primary" class="add-button" @click="handleAddTalk">添加说说</el-button>
     </div>
@@ -42,28 +68,54 @@ defineOptions({
   name: "TaLk"
 })
 import { Delete } from '@element-plus/icons-vue'
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { get_talk } from '../../api/talk'
 import { useRouter } from 'vue-router'
-import {del_talk} from '../../api/talk'
-const router  = useRouter()
+import { del_talk } from '../../api/talk'
+import { get_photo_list } from '../../api/photo'
+
+const photo_list = ref([])
+const photo_address = ref('')
 const talks = ref([])
-const del =async(id)=>{
-  const res= await del_talk(id)
+const router  = useRouter()
+let timer = null
+// 📌 获取背景轮播图
+const show_photo = async () => { 
+  const res = await get_photo_list()
+  photo_list.value = res.data.data
+  const index = Math.floor(Math.random() * photo_list.value.length)
+  photo_address.value = photo_list.value[index].imgUrl
+
+  timer =setInterval(() => {
+    const index = Math.floor(Math.random() * photo_list.value.length)
+    photo_address.value = photo_list.value[index].imgUrl
+  }, 5000) // 每5秒更换一次图片
+}
+
+// 📌 删除说说
+const del = async(id) => {
+  const res = await del_talk(id)
   console.log(res)
   console.log(id)
   get_talk_list()
 }
 
-const handleAddTalk=()=>{
-  router.push('/add_talk')
+// 📌 添加说说
+const handleAddTalk = () => {
+  if(localStorage.getItem('token')){
+    router.push('/add_talk')
+  }else{
+    router.push('/login')
+  }
 }
 
+// 📌 进入说说详情
 const handleClick =(id)=>{
   router.push(`/talk/${id}`)
 }
 
-const get_talk_list=async()=>{
+// 📌 获取说说列表
+const get_talk_list = async() => {
   const res = await get_talk()
   talks.value = res.data.data.recordList
   console.log(res.data.data.recordList)
@@ -71,121 +123,108 @@ const get_talk_list=async()=>{
 
 onMounted(()=>{
   get_talk_list()
+  show_photo()
 })
+onUnmounted(() => {
+  clearInterval(timer) // 清除定时器
+});
 </script>
 
-<style scoped>
+<style>
 .talk-page {
   position: relative;
   min-height: 100vh;
-  background: #0d0d25;
-  overflow: hidden;
-  padding: 40px 20px;
+  background-color: #f5f5f5;
 }
 
-.stars-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+.stars-bg img {
   width: 100%;
-  height: 100%;
-  background: url('https://cdn.pixabay.com/photo/2017/08/06/22/01/galaxy-2590582_1280.jpg') no-repeat center;
-  background-size: cover;
-  opacity: 0.3;
-  z-index: 0;
+  height: 300px;
+  object-fit: cover;
+  display: block;
 }
 
-/* ✅ 每个说说卡片 */
 .talk-container {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 20px;
 }
 
 .talk-card {
-  position: relative;   /* ✅ 让 like-btn 可以用 absolute 定位 */
   display: flex;
-  background: rgba(30, 36, 60, 0.9);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 12px #4455aa88;
-  color: #dce6ff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.talk-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 24px rgba(100, 120, 255, 0.3);
-}
-
-/* ✅ 头像 */
 .avatar img {
-  width: 64px;
-  height: 64px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 16px;
-  border: 2px solid #4455aa;
 }
 
 .content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  padding-bottom: 35px; /* ✅ 预留按钮的空间 */
+  margin-left: 15px;
 }
 
-/* ✅ 点赞按钮固定右下角 */
-.like-btn {
-  position: absolute;
-  right: 10px;
-  bottom: 5px;
-  padding: 2px 8px;
-  font-size: 12px;
-  z-index: 2;
+/* ✅ 图片区域放在顶部 */
+.talk-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
-/* ✅ 页面的右下角按钮 */
-.button-wrapper {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  z-index: 999;
+.talk-img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
 }
 
 .nickname {
-  font-weight: 700;
-  font-size: 18px;
-  color: #aabbff;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .time {
   font-size: 12px;
-  color: #8899cc;
-  font-style: italic;
+  color: #999;
+}
+
+/* ✅ 删除按钮样式 */
+.delete-btn {
+  margin-left: 10px;
 }
 
 .talk-text {
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 8px 0 12px;
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .footer {
-  font-size: 14px;
-  color: #aabbffcc;
+  font-size: 13px;
+  color: #666;
   display: flex;
-  gap: 16px;
+  gap: 12px;
+}
+
+.button-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 }
 </style>

@@ -82,7 +82,7 @@ onUnmounted(() => {
 const show_photo=async()=>{ 
      const randomTag = Math.floor(Math.random() * photo_list.value.length)
     photo_address.value = photo_list.value[randomTag].imgUrl
- setInterval(() => {
+  timer=setInterval(() => {
     const randomTag = Math.floor(Math.random() * photo_list.value.length)
     photo_address.value = photo_list.value[randomTag].imgUrl
     console.log('切换图片')

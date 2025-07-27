@@ -47,6 +47,7 @@ const show_friend=async()=>{
     const res = await get_friend()
     console.log(res.data.data)
     friends.value = res.data.data
+    console.log(friends.value)
 }
 defineOptions({
   name: 'FriendS'

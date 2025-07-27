@@ -62,7 +62,7 @@ const router = createRouter({
     },
     {
       path:'/talkfriend',
-       component : () =>import ('../views/layout/talk-friend.vue')
+       component : () =>import ('../views/layout/message-friend.vue')
     }
     
   ]

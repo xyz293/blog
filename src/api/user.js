@@ -26,3 +26,30 @@ export function login(username, password) {
     }
   });
 }
+export function cahnge_nickname(nickname) { 
+  return request({
+    url: '/user/info',
+    method: 'put',
+    data:{
+      nickname,
+    }
+  })
+}
+export function change_avatar(avatarUrl){
+  return request({
+    url:'/user/avatar',
+    method:'put',
+    data:{
+      avatarUrl
+    }
+  })
+}
+export function change_password(newPassword){
+  return request({
+    url:'/user/password',
+    method:'put',
+    data:{
+      newPassword
+    }
+  })
+}
