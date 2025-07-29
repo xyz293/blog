@@ -53,3 +53,13 @@ export function change_password(newPassword){
     }
   })
 }
+export function change_email(email,code){
+  return request({
+    url:'/user/email',
+    method:'put',
+    data:{
+      email,
+      code
+    }
+  })
+}

@@ -8,7 +8,7 @@ const photo_list =ref({
 })
 const show_photo=async()=>{
   const res=await my_photo()
-  console.log(res.data.data)
+  console.log(res)
   photo_list.value=res.data.data.recordList
 
 }

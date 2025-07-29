@@ -4,8 +4,11 @@ import {get_talk_detail} from '../../api/talk'
 import {onMounted,ref} from 'vue'
 import {talk_like} from '../../api/talk'
 import {useRoute} from 'vue-router'
-
+import {likeStore} from '../../stores/like'
+import talkComment from './talk-comment.vue'
+const likestore = likeStore()
 const route = useRoute()
+const isshow=ref(false)
 const talk   =ref({
     nickname:'',
     avatar:'',
@@ -17,8 +20,8 @@ const talk   =ref({
 const get_like=async(id)=>{
     const res = await talk_like(id)
     if(res.data.code==200){
-     
-    talk.value.likeCount = Number(talk.value.likeCount) + 1
+     likestore.add_like()
+     talk.value.likeCount=likestore.likeCount
     }
     console.log(res)
 }
@@ -35,11 +38,17 @@ onMounted(()=>{
 
     show_talk(id)
 })
+const get_comment=()=>{
+  isshow.value = true
+}
+const shut=(newValue)=>{
+  isshow.value = newValue
+}
 </script>
 <template>
-    <div></div>
   <div class="talk-page">
-    <div class="talk-card" :style="{marginBottom: '400px'}">
+    <!-- 说说内容卡片 -->
+    <div class="talk-card">
       <div class="avatar">
         <img :src="talk.avatar" alt="头像" />
       </div>
@@ -51,75 +60,62 @@ onMounted(()=>{
 
         <p class="talk-text">{{ talk.talkContent }}</p>
 
+        <!-- 图片展示 -->
         <div v-if="talk.imgList && talk.imgList.length" class="img-list">
           <img v-for="(img, index) in talk.imgList" :key="index" :src="img" class="talk-img" />
         </div>
 
+        <!-- 底部按钮 -->
         <div class="footer">
-      <button class="likes-button" @click="get_like(id)">👍 {{ talk.likeCount }}</button>
-       <button class="likes-button" >💬评论</button>
+          <button class="likes-button" @click="get_like(id)">👍 {{ talk.likeCount }}</button>
+          <button class="likes-button" @click="get_comment(id)">💬 评论</button>
         </div>
       </div>
     </div>
-    <router-view></router-view>
-   
+
+    <!-- 评论模块（子组件） -->
+    <transition name="fade-slide">
+      <talkComment v-if="isshow" :isshow="isshow" @submit="shut" />
+    </transition>
   </div>
 </template>
 
 <style scoped>
 .talk-page {
-  min-height: 100vh;            /* 让容器高度满屏 */
-  display: flex;                /* 使用flex布局 */
-  justify-content: center;      /* 水平居中 */
-  align-items: center;          /* 垂直居中 */
-  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  padding: 40px 20px;
   background: linear-gradient(135deg, #0d0d25, #1a1f3a);
-}
-.likes-button {
-  background: linear-gradient(135deg, #7488ff, #aabfff);
-  border: none;
-  border-radius: 16px;
-  padding: 6px 14px;
-  color: #0e1c5a;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 0 6px 1px #9bb2ffcc;
-  transition: background-color 0.3s ease;
-  user-select: none;
+  gap: 20px; 
 }
 
-.likes-button:hover {
-  background: linear-gradient(135deg, #aabfff, #7488ff);
+/* 评论模块显示/隐藏动画 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s ease;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-15px);
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-15px);
 }
 
-
+/* 说说卡片样式 */
 .talk-card {
-  width: 100%;                 /* 宽度占满容器 */
-  max-width: 700px;            /* 最大宽度限制，防止太宽 */
+  width: 100%;
+  max-width: 700px;
   background: rgba(26, 31, 58, 0.95);
   border-radius: 16px;
   padding: 24px 32px;
   box-shadow: 0 0 12px #4455aa88;
   color: #dce6ff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.talk-card {
   display: flex;
-  background: rgba(26, 31, 58, 0.95);
-  border-radius: 16px;
-  padding: 16px;
-  margin: 20px auto;
-  max-width: 600px;
-  box-shadow: 0 0 12px #4455aa88;
-  color: #dce6ff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.talk-card.top {
-  border: 2px solid #6699ff;
-  box-shadow: 0 0 24px #6688ffcc;
 }
 
 .talk-card:hover {
@@ -183,5 +179,24 @@ onMounted(()=>{
   color: #aabbffcc;
   display: flex;
   gap: 16px;
+}
+
+/* 按钮样式 */
+.likes-button {
+  background: linear-gradient(135deg, #7488ff, #aabfff);
+  border: none;
+  border-radius: 16px;
+  padding: 6px 14px;
+  color: #0e1c5a;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 0 6px 1px #9bb2ffcc;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.likes-button:hover {
+  background: linear-gradient(135deg, #aabfff, #7488ff);
 }
 </style>

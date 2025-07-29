@@ -18,6 +18,7 @@
                 :class="{ 'btn-bounce-anim': bounceStates.speak }"
                 @mousedown="startBounce('speak')"
                 @animationend="endBounce('speak')"
+                @click="go_mytalk"
               >
                 我的说说
               </el-button>
@@ -133,6 +134,11 @@
             <el-form-item label="密码">
               <el-input v-model="password" placeholder="请输入新密码" show-password></el-input>
             </el-form-item>
+             <el-form-item label="邮箱">
+              <el-input v-model="code" placeholder="验证码"></el-input>
+              <el-button type="primary" @click="send_code">发送验证码</el-button>
+            </el-form-item>
+
 
             <!-- 头像上传 -->
             <el-form-item label="上传头像">
@@ -168,7 +174,26 @@ import { onMounted, ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import {cahnge_nickname} from '../../api/user'
 import {userStore} from '../../stores/my-data'
+import {getUserInfo} from '../../api/user'
+import {change_email} from '../../api/user'
+import {change_password} from '../../api/user'
 const userstore =userStore()
+
+const send_code =async()=>{
+  if(email.value){
+   await getUserInfo(email.value)
+  }
+  alert('输入邮箱')
+}
+const go_mytalk =()=>{
+  if(localStorage.getItem('token')){
+    router.push('/talk')
+  }
+  else {
+    alert('请先登录')
+     router.push('/login')
+  }
+}
 const showedit=()=>{
   if(localStorage.getItem('token')){
       showInput.value = true
@@ -180,13 +205,18 @@ const showedit=()=>{
 
 }
 const edit_user=async()=>{
-  await cahnge_nickname(nickname.value)
+   await cahnge_nickname(nickname.value)
   console.log(nickname.value)
-  userstore.change_username(data_list.value.nickname)
+  await change_email(email.value,code.value)
+  await change_password(password.value,code.value,email.value)
    showInput.value = false
    data_list.value.nickname=nickname.value
+   data_list.value.email=email.value
     get_my_data()
     nickname.value=''
+    email.value=''
+    password.value=''
+    code.value=''
 }
 const showInput = ref(false)
 const data_list = ref({
@@ -200,6 +230,7 @@ const data_list = ref({
 const nickname = ref('')
 const email = ref('')
 const password = ref('')
+const code = ref('')
 
 const bounceStates = reactive({
   speak: false,
@@ -223,9 +254,33 @@ function endBounce(key) {
 
 const router = useRouter()
 
-const go_talk = () => router.push('/talkfriend')
-const go_friend = () => router.push('/friend')
-const go_photo = () => router.push('/myphoto')
+const go_talk = () =>{
+  if(localStorage.getItem('token')){
+    router.push('/talkfriend')
+  }
+  else {
+    alert('请先登录')
+     router.push('/login')
+  }
+}
+const go_friend = () =>{
+  if(localStorage.getItem('token')){
+    router.push('/friend')
+  }
+  else {
+    alert('请先登录')
+     router.push('/login')
+  }
+}
+const go_photo = () =>{
+  if(localStorage.getItem('token')){
+    router.push('/myphoto')
+  }
+  else {
+    alert('请先登录')
+     router.push('/login')
+  }
+}
 
 
 

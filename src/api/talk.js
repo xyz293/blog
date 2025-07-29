@@ -20,8 +20,8 @@ export function talk_like(id) {
 }
 export function get_comment() {
   return request({
-    url: '/recent/comment',
-    method: 'post',
+    url: '/comment/list',
+    method: 'get',
   })
 }
 export function add_talk(talkContent,isTop,status){

@@ -4,7 +4,7 @@
 
     <header class="header">
       <div class="container">
-        <h1 class="logo">星空博客</h1>
+        <h1 class="logo">个人博客</h1>
         <div class="header-top">
           <nav class="nav">
             <el-button type="primary" class="nav-link active">首页</el-button>
