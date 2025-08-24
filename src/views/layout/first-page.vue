@@ -2,112 +2,63 @@
   <div class="blog-homepage">
     <canvas ref="canvasRef" class="particles-canvas"></canvas>
 
-    <header class="header">
-      <div class="container">
-        <h1 class="logo">个人博客</h1>
-        <div class="header-top">
-          <nav class="nav">
-            <el-button type="primary" class="nav-link" @click="id=1">首页</el-button>
-            <el-button type="primary" class="nav-link" @click="id=2">说说</el-button>
-            <el-button type="primary" class="nav-link" @click="id=3">关于</el-button>
-            <el-button type="primary" class="nav-link" @click="id=4">留言板</el-button>
-            <el-button type="primary" class="nav-link" @click="id=5">友情</el-button>
-            <el-button type="primary" class="nav-link" @click="isshow=true">登录</el-button>
-          </nav>
-        
-          <el-input
-            v-model="text"
-            placeholder="搜索文章..."
-            clearable
-            prefix-icon="el-icon-search"
-            class="search-input"
-            @keydown.enter="searchs"
+    <main class="container main-content" :style="{marginLeft: '180px'}">
+      <div class="carousel-banner">
+    <img v-lazy="photo_address" alt="轮播图" class="carousel-image" />
+  </div>
+      <h2 class="section-title">最新文章</h2>
+      <div class="posts-grid" v-if="ishow==true">
+        <article
+          v-for="post in post_list"
+          :key="post.id"
+          class="post-card"
+        >
+         <img v-lazy="post.articleCover" alt="文章封面" class="post-image" />
 
-          />
-          <el-button type="primary" @click="pulish">发布文章</el-button>
-        </div>
+          <h3 class="post-title">{{ post.articleTitle }}</h3>
+          <p class="post-excerpt">{{ post.articleDesc }}</p>
+          <div class="post-meta">
+            <time>{{ post.createTime }}</time>
+            <div class="tags">
+            <el-form>
+                <el-form-item>
+                    <el-tag>{{post.tag}}</el-tag>
+                </el-form-item>
+            </el-form>
+            </div>
+          </div>
+          <button class="read-more" @click=" get_detail(post.id)">阅读更多</button>
+        </article>
       </div>
-    </header>
-    <first-page v-if="id==1"></first-page>
-    <friend v-if="id==5"></friend>
-    <talk v-if="id==2"></talk>
-    <messagefriend v-if="id==4"></messagefriend>
-    <my_deatail v-if="id==3"></my_deatail>
 
-    <el-dialog
-  title="搜索结果"
-  v-model="searchshow"
+    </main>
 
-  width="360px"
-  :style="{ top: '10vh' }"
-  :close-on-click-modal="false"
-  class="login-dialog"
->
-  <search :text="text"></search>
-</el-dialog>
-       <el-dialog
-  title="用户登录"
-   v-model="isshow"
-
-
-  width="360px"
-  :style="{ top: '10vh' }"
-  :close-on-click-modal="false"
-  class="login-dialog"
->
-  <login v-if="loginshow" @enterregister="enterregister" @enterforget="leave" />
-  <regiser v-else/>
-</el-dialog>
-
-
+    <footer class="footer">
+      <div class="container">&copy; 2025 星空博客 | 版权所有</div>
+    </footer>
   </div>
 
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { ElInput, ElButton } from 'element-plus'
 import 'element-plus/es/components/input/style/css'
-
-import messagefriend from '../layout/message-friend.vue'
-import FirstPage from '../layout/first-page.vue'
-import friend from '../layout/friend.vue' 
-import talk from '../layout/talk.vue'
-import search from '../layout/search-page.vue'
-import login from '../login/login.vue'
-import regiser from '../login/resiger.vue'
-
-import my_deatail from '../person/my-deatail.vue'
-
-
 import 'element-plus/es/components/button/style/css'
-import {useRouter} from 'vue-router'
+
+import { useRouter } from 'vue-router'
+
 import {get_artcrile_list} from '../../api/artcrile'
 import {get_photo_list} from '../../api/photo'
+const get_detail=(ids)=>{
+  router.push(`/detail/${ids}`)
+}
 const router = useRouter()
 const post_list=ref([])
-const searchshow = ref(false)
-
 const photo_list=ref([])
-const isshow = ref(false)
-const loginshow = ref(true)
-const searchs=()=>{
-  console.log(text.value)
-  searchshow.value=true
-
-
-}
-
-const enterregister=(data)=>{
-  loginshow.value=data
-}
-const leave=(data)=>{
-  isshow.value=data
-}
+const ishow = ref(true)
 
 const photo_address = ref('')
 let timer = null
-const id = ref(1)
 onUnmounted(() => {
   clearInterval(timer)
   console.log('页面已卸载，定时器已清除')
@@ -127,6 +78,7 @@ const get_photo = async ()=>{
   photo_list.value =res.data.data
   console.log(photo_list.value[1])
 }
+
 const show_article = async ()=>{
   const res = await get_artcrile_list()
   post_list.value =res.data.data.recordList
@@ -134,19 +86,11 @@ const show_article = async ()=>{
   console.log(post_list.value)
 }
 onMounted(async () => {
-
    show_article()
   await get_photo()     
   show_photo()          
  
 })
-
-const text = ref('')
-
-const pulish =()=>{
-    router.push('/add')
-}
-
 
 //在dom加载完成后执行，后续明天写
 

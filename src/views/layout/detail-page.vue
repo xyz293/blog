@@ -1,11 +1,13 @@
 <script setup>
-import {  ref,onMounted } from 'vue'
+import {  ref,onMounted} from 'vue'
 import { useRoute } from 'vue-router'
+
+
+const route=useRoute()
+const id = route.params.id
+
 import { get_detail } from '../../api/artcrile'
 import {likeArticle} from '../../api/artcrile'
-
-const route = useRoute()
-const id = route.params.id
 const article = ref({
   articleCover: '',
   articleTitle: '',
@@ -15,7 +17,7 @@ const show_detail = async () => {
   const res = await get_detail(id)
   article.value = res.data.data
   console.log(article.value)
-  const likeRes = await likeArticle(id);
+  const likeRes = await likeArticle( id);
   console.log(likeRes);
 }
 

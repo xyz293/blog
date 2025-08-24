@@ -36,20 +36,45 @@
       <button v-if="showInput" @click="sendmessage">发送</button>
     </div>
   </div>
+    <el-dialog
+  title="用户登录"
+  v-model="dialogVisible"
+  width="360px"
+  :style="{ top: '10vh' }"
+  :close-on-click-modal="false"
+  class="login-dialog"
+>
+  <login v-if="logins==true" :logins="logins" @enterregister="receiveMessage" />
+
+
+  <regiser v-else />
+</el-dialog>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import {get_my} from '../../api/my-detail'
 import { add_message, get_message } from '../../api/message'
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
+import Login from '../login/login.vue'
+import regiser from '../login/resiger.vue'
 import { get_photo_list } from '../../api/photo'
+const dialogVisible = ref(false)
+const logins = ref(true)
+const receiveMessage = (msg) => {
+  logins.value = msg
+}
+const showavatar = async () => {
+  const res = await get_my()
+  console.log(res)
+  avatar.value = res.data.data.avatar
 
-const router = useRouter()
+}
+
 const messages = ref([])
 const message = ref('')
-const username = localStorage.getItem('username')
-const avatar = localStorage.getItem('avatar')
+const avatar = ref('')
+const nickname = ref('游客')
 const showInput = ref(false)
 const photo_address = ref('')
 let photoTimer = null
@@ -62,26 +87,27 @@ const show_message = async () => {
 const sendmessage = async () => {
   if (localStorage.getItem('token') == null) {
     ElMessage({ message: '请先登录', type: 'warning' })
-    router.push('/login')
+    dialogVisible.value = true
     return
   }
   else if (message.value == '') {
     ElMessage({ message: '请输入内容', type: 'warning' })
     return
   }
-  await add_message({
-    messageContent: message.value,
-    name: username,
-    avatar: avatar
-  })
-
-  messages.value.unshift({
-    avatar,
-    nickname: username,
-    messageContent: message.value
-  })
+else{
+  const res =  await add_message(
+    message.value,
+    nickname.value,
+    avatar.value
+  )
+  await show_message()
+  console.log(nickname.value)
+  console.log(res)
   message.value = ''
   showInput.value = false
+  console.log(avatar.value)
+  console.log(message.value)
+}
 }
 
 const show_photo = async () => {
@@ -100,9 +126,14 @@ const show_photo = async () => {
   }, 4000)
 }
 
-onMounted(() => {
-  show_photo()
-  show_message()
+onMounted(async () => {
+
+ await show_photo()
+
+  await show_message()
+  await showavatar()
+
+
 })
 
 onUnmounted(() => {
@@ -128,6 +159,16 @@ onUnmounted(() => {
   background-position: center;
   border-radius: 10px;
   z-index: 0;
+}
+/* LoginForm.vue */
+.login-container {
+  width: 100%;
+  min-height: 280px; /* 保证最小高度，避免被压缩 */
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 内容垂直居中 */
 }
 
 /* 轮播动画 */

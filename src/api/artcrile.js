@@ -31,7 +31,7 @@ export function search(text){
     return request({
         url:'/article/search',
         params:{
-          keyword:  text
+          keyword: text
         }
     })
 }

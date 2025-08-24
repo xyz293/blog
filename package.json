@@ -13,8 +13,9 @@
   },
   "dependencies": {
     "@halo-dev/api-client": "^2.21.1",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "element-plus": "^2.10.4",
+    "marked": "^16.2.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",
     "vue": "^3.5.17",

@@ -9,14 +9,6 @@ const router = createRouter({
     redirect:'/mainpage'
     },
     {
-      path:'/resiger',
-      component: () => import('../views/login/resiger.vue')
-    },
-    {
-      path:'/login',
-      component: () => import('../views/login/login.vue')
-    },
-    {
       path:'/mainpage',
       component: () => import('../views/layout/main-page.vue'),
     },

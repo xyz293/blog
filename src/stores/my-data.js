@@ -5,7 +5,7 @@ import { ref } from 'vue'
 
 export const userStore = defineStore('my-data', () => {
   const username = ref('')
-  const avatar = ref('')
+  const avatar = ref('')//解决token的问题
 
   function change_username(newName) {
     username.value = newName

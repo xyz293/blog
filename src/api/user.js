@@ -63,3 +63,10 @@ export function change_email(email,code){
     }
   })
 }
+export const get_about = () => {
+  return request({
+    url: '/about',
+    method: 'get'
+  })
+}
+

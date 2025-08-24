@@ -1,142 +1,179 @@
 <script setup>
-import {onMounted,ref} from 'vue'
-import {useRoute} from 'vue-router'
-import {search} from '../../api/artcrile'
-const route = useRoute()    
-const text =route.params.detail
-const get_text=async()=>{
-    const res = await search(text)
-    console.log(res)
-    list.value = res.data.data
-}
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { search } from '../../api/artcrile'
 
-onMounted(()=>{
-    get_text()
-   
+const props = defineProps({
+  text: {
+    type: String,
+    default: ''
+  }
 })
-import {useRouter} from 'vue-router'
-const router = useRouter()
-const list = ref([])
-const handleClick = async (id) => {
-    router.push(`/detail/${id}`)
-}
-</script>
-<template>
 
-    <div class="articles">
-      <p
-        v-for="item in list"
-        :key="item.id"
-        v-html="item.articleTitle"
-        class="article-item"
-        @click="handleClick(item.id)"
-      ></p>
+const router = useRouter()
+const datas = ref([])
+const isLoading = ref(true)
+
+// 获取文章详情
+const getDetail = (id) => {
+  router.push(`/detail/${id}`)
+}
+
+// 搜索文章
+const searchArticle = async () => {
+  if (!props.text.trim()) {
+    datas.value = []
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const res = await search(props.text)
+    datas.value = res.data?.data || []
+  } catch (error) {
+    console.error('搜索失败:', error)
+    datas.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// 初始加载 & 监听 text 变化
+onMounted(() => {
+  searchArticle()
+})
+
+watch(() => props.text, () => {
+  isLoading.value = true
+  searchArticle()
+})
+</script>
+
+<template>
+  <div class="search-result-container">
+    <!-- 加载状态 -->
+    <div v-if="isLoading" class="loading">
+      <p>搜索中...</p>
     </div>
 
+    <!-- 无结果 -->
+    <div v-else-if="datas.length === 0" class="no-result">
+      <p>暂无相关文章</p>
+    </div>
+
+    <!-- 搜索结果列表 -->
+    <article
+      v-for="item in datas.slice(0, 5)"
+      :key="item.id"
+      class="article-item"
+      @click="getDetail(item.id)"
+    >
+      <p class="article-title">{{ item.articleTitle }}</p>
+    </article>
+  </div>
 </template>
 
 <style scoped>
-.article-container {
-  max-width: 900px;
-  margin: 20px auto 40px;
-  padding: 0 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #e0e6ff;
-  user-select: none;
+.search-result-container {
+  padding: 20px;
+  font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  color: #2c3e50;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 60px;
 }
 
-/* 标签列表 */
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.tag {
-  background: linear-gradient(135deg, #7a8cff, #aebaff);
-  color: #1a264d;
-  padding: 6px 18px;
-  border-radius: 24px;
-  font-weight: 600;
-  font-size: 15px;
-  box-shadow: 0 0 10px #8499ffaa;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.tag:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px #7687ffdd;
-}
-
-/* 文章列表容器 */
-.articles {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* 文章条目 */
+/* 单个文章项 */
 .article-item {
-  background: linear-gradient(135deg, rgba(30, 30, 50, 0.7), rgba(50, 50, 80, 0.8));
-  padding: 20px 28px;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(40, 48, 110, 0.5);
-  font-size: 20px;
-  line-height: 1.5;
-  color: #c5cee0;
+  position: relative;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #dde2e8;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 14px;
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: text;
-  word-break: break-word;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
 .article-item:hover {
-  background: linear-gradient(135deg, rgba(90, 100, 160, 0.8), rgba(110, 120, 190, 0.9));
-  box-shadow: 0 8px 30px rgba(90, 100, 180, 0.8);
-  transform: translateX(12px) scale(1.03);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #3498db;
 }
 
-/* 内嵌标签样式 */
-.article-item span {
-  color: #f47166;
-  font-weight: 700;
+.article-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #3498db, #1a7fcc);
+  opacity: 0;
+  transition: opacity 0.3s;
+  border-radius: 12px 0 0 12px;
 }
 
-.article-item em {
-  color: #66ccff;
+.article-item:hover::before {
+  opacity: 1;
+}
+
+/* 文章标题 */
+.article-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2d3d;
+  line-height: 1.5;
+  word-wrap: break-word;
+  transition: color 0.3s;
+}
+
+.article-item:hover .article-title {
+  color: #3498db;
+}
+
+/* 加载与无结果提示 */
+.loading,
+.no-result {
+  padding: 20px;
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 15px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.no-result {
   font-style: italic;
 }
 
-.article-item b {
-  color: #ffe066;
-  font-weight: 700;
-}
-
-.article-item strong {
-  color: #ff9966;
-  font-weight: 700;
-}
-
-/* 响应式适配 */
-@media (max-width: 720px) {
-  .article-container {
-    padding: 0 12px;
-  }
-
-  .tag-list {
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .tag {
-    font-size: 13px;
-    padding: 5px 14px;
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .search-result-container {
+    padding: 15px;
   }
 
   .article-item {
-    font-size: 18px;
-    padding: 16px 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+  }
+
+  .article-title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .article-item {
+    padding: 12px 14px;
+  }
+
+  .article-title {
+    font-size: 14.5px;
   }
 }
 </style>

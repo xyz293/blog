@@ -55,7 +55,29 @@
         </div>
       </div>
     </div>
+        <el-dialog
+     v-model="isShow"
 
+    title="用户登录" 
+    width="360px"
+    :style="{ top: '10vh' }"
+    :close-on-click-modal="false"
+    class="login-dialog"
+  >
+    <addtalk />
+</el-dialog>
+ <el-dialog
+     v-model="loginshow"
+    title="用户登录" 
+    width="360px"
+    :style="{ top: '10vh' }"
+    :close-on-click-modal="false"
+    class="login-dialog"
+  >
+    <login @enterregister="enter" v-if="show1"/>
+    <regiser v-else :style="{top:'10vh'}"/>
+
+</el-dialog>
     <!-- 悬浮按钮 -->
     <div class="button-wrapper">
       <el-button type="primary" class="add-button" @click="handleAddTalk">添加说说</el-button>
@@ -73,6 +95,17 @@ import { get_talk } from '../../api/talk'
 import { useRouter } from 'vue-router'
 import { del_talk } from '../../api/talk'
 import { get_photo_list } from '../../api/photo'
+import addtalk from '../layout/add-talk.vue'
+import login from '../login/login.vue'
+import regiser from '../login/resiger.vue'
+
+const isShow = ref(false)
+const show1 = ref(true)
+
+const loginshow = ref(false)
+const enter=(data)=>{
+  show1.value = data
+}
 
 const photo_list = ref([])
 const photo_address = ref('')
@@ -102,11 +135,13 @@ const del = async(id) => {
 
 // 📌 添加说说
 const handleAddTalk = () => {
-  if(localStorage.getItem('token')){
-    router.push('/add_talk')
+  if(!localStorage.getItem('token')){
+    loginshow.value = true
+
   }else{
-    router.push('/login')
+      isShow.value = true
   }
+
 }
 
 // 📌 进入说说详情
